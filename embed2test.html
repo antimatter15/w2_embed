@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>Embed API V2</title>
+  <style>
+    .waveblip {
+      border: 1px solid gray;
+    }
+    
+    .wavethread {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+	<script type="text/javascript" src="embed2.js"></script>
+
+	<div id="wave_embed_one" style="display:none">
+    <div class="waveheader">
+      <a onclick="{{addparticipant}}" href="#">Add Participant</a>
+      By {{participantlist}}
+      <a onclick="{{reload}}" href="#">Reload</a>
+    </div>
+    <div class="wavebody">
+        <div class="info">
+          <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
+          <b>By</b> {{contributorlist}}
+        </div>
+        {{blip.html}}
+        
+        <a onclick="{{edit}}" href="#">Edit</a> 
+        <a onclick="{{remove}}" href="#">Remove</a> 
+        <a onclick="{{reply}}" href="#">Reply</a> 
+        
+    </div>
+    <div class="wavefooter">
+    {{bliparr.length-1}} Responses <br>
+      <div class="tags">
+        {{wave.tags.join(', ')}}
+        <a onclick="{{addtag}}" href="#">Add Tag</a>
+      </div>
+      <a href="{{wave.permalink}}">Open in Google's awesome client</a>
+    </div>
+    <div class="waveedit">
+      <textarea style="width:100%;height:130px" class="wavetext"></textarea>
+      <button onclick="{{submit}}">Submit</button> or <a href="#" onclick="{{cancel}}">cancel</a>
+    </div>
+    <textarea style="width:100%;height:130px" id="replystuff"></textarea>
+    <button onclick="magic.reply(document.getElementById('replystuff').value)">Leave a comment</button>
+	</div>
+
+	<hr>
+		<div id="wave_embed_two" style="display:none">
+    <div class="waveheader">
+      <a onclick="{{addparticipant}}" href="#">Add Participant</a>
+      By {{participantlist}}
+    </div>
+    <div class="wavebody">
+        <div class="info">
+          <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
+          <b>By</b> {{contributorlist}}
+        </div>
+        {{blip.html}}
+        
+        <a onclick="{{edit}}" href="#">Edit</a> 
+        <a onclick="{{remove}}" href="#">Remove</a> 
+        <a onclick="{{reply}}" href="#">Reply</a> 
+        
+    </div>
+    <div class="wavefooter">
+      {{bliparr.length}} Responses <br>
+      <div class="tags">
+        {{wave.tags.join(', ')}}
+        <a onclick="{{addtag}}" href="#">Add Tag</a>
+      </div>
+      <a href="{{wave.permalink}}">Open in Google's awesome client</a>
+    </div>
+    <div class="waveedit">
+    
+      <textarea style="width:100%;height:130px" class="wavetext"></textarea>
+      <button onclick="{{submit}}">Submit</button> or <a href="#" onclick="{{cancel}}">cancel</a>
+    </div>
+	</div>
+
+<hr>
+<div id="wave_embed_demo" style="display:none">
+  {{participantlist}}
+  <div class="wavebody">
+    {{blip.html}}
+    {{blip.permalink}}
+  </div>
+  Go here! {{wave.permalink}}
+</div>
+
+
+	<script type="text/javascript">
+	  var magic = w2_embed({
+	    element: document.getElementById('wave_embed_one'),
+	    identifier: 'tesetiengw12e34',
+	    hideroot: true,
+	    poll_updates: true,
+	    api_root: 'localhost:8080',
+	    participants: ['public@a.gwave.com']
+	  })
+	  
+	  var magic2 = w2_embed({
+	    element: document.getElementById('wave_embed_two'),
+	    identifier: 'omffgawfesomeness29',
+	    root_title: 'woot titlez',
+	    api_root: 'localhost:8080',
+	    root_content: '5/2/2096\nhttp://google.com/\n\nThe world is now over',
+	    participants: ['public@a.gwave.com']
+	  })
+	  
+	  var demo = w2_embed({
+	    element: document.getElementById('wave_embed_demo'),
+	    identifier: 'omffgawfesomeness29',
+	    root_title: 'woot titlez',
+	    api_root: 'localhost:8080',
+	    root_content: '5/2/2096\nhttp://google.com/\n\nThe world is now over',
+	    participants: ['public@a.gwave.com']
+	  })
+	</script>
+	
+	
+
+
+ 
+	
+</body>
+</html>

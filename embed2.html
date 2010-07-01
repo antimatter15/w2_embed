@@ -1,0 +1,63 @@
+<div class="wave_container" id="wave_embed">
+  <div class="message_template" style="display: none">
+    <div class="info">
+      <div style="float:right;color:#555">{{blip.date}}</div>
+      <b>By</b> {{blip.contributors.join(', ')}}
+    </div>
+    {{blip.html}}
+  </div>
+</div>
+
+<script type='text/javascript'>
+function blip_template(){
+
+}
+
+
+function blip_render(blipid, parent){ //a wrapper around renderBlip that adds chrome related things
+  var blip = msg.data.blips[blipid];
+  if(!blip || blip.dom) return; //already rendered, go on
+  
+  var html = renderBlip(blip).innerHTML;
+  var doc = document.createElement('div');
+  
+  msg.data.blips[blipid].dom = doc;
+  
+  blip.html = html;
+  blip.date = format_time(blip.lastModifiedTime).toString();
+
+  
+  doc.className = "message";
+  
+  
+  doc.innerHTML = mesage_template.innerHTML.replace(/\{\{(.*)\}\}/g, function(a, g){
+    return eval(g);
+  });
+  
+  
+//  userList(blip.contributors)
+  
+  
+  var show_box = function(e){
+    e = e || window.event;
+    e.cancelBubble = true;
+    if(e.stopPropagation) e.stopPropagation();
+    var tag = (e.target||e.srcElement).tagName.toLowerCase();
+    if(tag != "a"){
+      console.log(blip);
+      info.parentNode.insertBefore(create_contextmenu(blip), info.nextSibling);
+      //info.appendChild(create_contextmenu(blip))
+    }
+  }
+  
+  if(!window.NO_HOVER_SHOW_BOX){
+    doc.onmouseover = show_box;
+  }else{
+    doc.onclick = show_box;
+  }
+  doc.insertBefore(info, doc.firstChild);
+  parent.appendChild(doc);
+  return doc;
+}
+
+</script>
