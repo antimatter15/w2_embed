@@ -17,19 +17,19 @@ The major change is a total decoupling of it and the mainline Anonybot codebase.
 
 The biggest change is the templating engine. Before, it only worked with the blip design, but now it’s totally integral to every aspect of the interface. Lets walk through the basics of the API, starting with a minimal example.
 
-  <div id="wave_embed_demo" style="display:none">
-    {{participantlist}}
-    <div class="wavebody">
-      {{blip.html}}
-    </div>
-    Go here! {{wave.permalink}}
-  </div>
-  <script type="text/javascript" src="http://anony-bot.appspot.com/assets/embed2.mini.js"></script>
-  <script type="text/javascript">
-    var demo = w2_embed({
-      element: document.getElementById('wave_embed_demo')
-    })
-  </script>
+      <div id="wave_embed_demo" style="display:none">
+        {{participantlist}}
+        <div class="wavebody">
+          {{blip.html}}
+        </div>
+        Go here! {{wave.permalink}}
+      </div>
+      <script type="text/javascript" src="http://anony-bot.appspot.com/assets/embed2.mini.js"></script>
+      <script type="text/javascript">
+        var demo = w2_embed({
+          element: document.getElementById('wave_embed_demo')
+        })
+      </script>
         
         
 All the content is wrapped in a huge hidden div, and inside is one element with the wavebody class. That huge wave is the scope of the templating engine. That means that if you put {{1+1}} anywhere inside the div, it’ll show up as 2. Place it anywhere outside the div, and it shows up as {{1+1}}. Simple, right? The wavebody element is where the actual blips will go. But since there aren’t any blips beforehand, wavebody is filled with the template for a single blip. The content gets multiplied several times and that makes the wave. The template scheme is really simple. Basically, you just wrap arbitrary JS code within {{ and }}. The code gets executed (in the scope of the wave) and the block gets replaced with the return value of the script. When you’re inside wavebody there are a few additional blip-specific things that you can add. Now we have to learn the magical snippets of code you can use inside the curly brackets. One of the objects exposed to the templates is wave. The nice thing is that it mirrors the wave api. So the wave object exposes the following attributes (copied from the google page).
@@ -59,8 +59,8 @@ There are also some functions you can call. For example, wave.creationTime is in
 There are a few actions that you can do. Certain strings like {{addparticipant}} can be used in onclick= attributes to trigger certain actions on various events.
 
 
-  <a onclick="{{addparticipant}}" href="#">Add Participant</a>
-  <button onclick="{{addtag}}">Add Tag</button>
+      <a onclick="{{addparticipant}}" href="#">Add Participant</a>
+      <button onclick="{{addtag}}">Add Tag</button>
 
 
 Here you see a link and a button. The link has been configured to prompt the user for a participant ID to add when clicked, and the button was set to prompt the user for a tag to add when clicked. There are several such actions.
@@ -97,17 +97,17 @@ remove Remove the blip, it will first issue a confirmation prompt to the user
 reply Add a reply box immediately below the blip. If there is already a blip below, the reply box is indented.
 Below is a little example showing how to use the blip object.
 
-  <div class="wavebody">
-      <div class="info">
-        <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
-        <b>By</b> {{contributorlist}}
+      <div class="wavebody">
+          <div class="info">
+            <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
+            <b>By</b> {{contributorlist}}
+          </div>
+          {{blip.html}}
+          
+          <a onclick="{{edit}}" href="#">Edit</a> 
+          <a onclick="{{remove}}" href="#">Remove</a> 
+          <a onclick="{{reply}}" href="#">Reply</a> 
       </div>
-      {{blip.html}}
-      
-      <a onclick="{{edit}}" href="#">Edit</a> 
-      <a onclick="{{remove}}" href="#">Remove</a> 
-      <a onclick="{{reply}}" href="#">Reply</a> 
-  </div>
 
 Lastly is the JS part. Without it, nothing would ever show up. You need to include the currently 6.5KB JS library from http://anony-bot.appspot.com/assets/embed2.mini.js. After that, you need a separate script tag anywhere after the big hidden super element. It must be outside the super element (unimaginable evils will happen if it isn’t). Inside that script tag needs to be a function call to w2_embed. The first (and only) argument has to be a JS object with at least the element key pointing to a DOM element which contains an element with the class wavebody. There are lots of other config options, and here they are.
 * element (Required) a dom element which contains a div with the “wavebody” class
@@ -143,55 +143,55 @@ You can see that the function call was saved to a variable named demo. That’s 
 * reload() Reload the wave.
 So lets try putting everything together.
 
-  <style>
-    .waveblip {
-      border: 1px solid gray;
-    }
-    
-    .wavethread {
-      margin-left: 20px;
-    }
-  </style>
+      <style>
+        .waveblip {
+          border: 1px solid gray;
+        }
+        
+        .wavethread {
+          margin-left: 20px;
+        }
+      </style>
 
-  <div id="wave_embed_one" style="display:none">
-    <a onclick="{{addparticipant}}" href="#">Add Participant</a>
-    By {{participantlist}}
-    <a onclick="{{reload}}" href="#">Reload</a>
-    <div class="wavebody">
-        <div class="info">
-          <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
-          <b>By</b> {{contributorlist}}
+      <div id="wave_embed_one" style="display:none">
+        <a onclick="{{addparticipant}}" href="#">Add Participant</a>
+        By {{participantlist}}
+        <a onclick="{{reload}}" href="#">Reload</a>
+        <div class="wavebody">
+            <div class="info">
+              <div style="float:right;color:#555">{{format_time(blip.lastModifiedTime)}}</div>
+              <b>By</b> {{contributorlist}}
+            </div>
+            {{blip.html}}
+            
+            <a onclick="{{edit}}" href="#">Edit</a> 
+            <a onclick="{{remove}}" href="#">Remove</a> 
+            <a onclick="{{reply}}" href="#">Reply</a> 
+            
         </div>
-        {{blip.html}}
-        
-        <a onclick="{{edit}}" href="#">Edit</a> 
-        <a onclick="{{remove}}" href="#">Remove</a> 
-        <a onclick="{{reply}}" href="#">Reply</a> 
-        
-    </div>
-    {{bliparr.length-1}} Responses <br>
-    <div class="tags">
-      {{wave.tags.join(', ')}}
-      <a onclick="{{addtag}}" href="#">Add Tag</a>
-    </div>
-    <a href="{{wave.permalink}}">Open in Google's awesome client</a>
-    <div class="waveedit">
-      <textarea style="width:100%;height:130px" class="wavetext"></textarea>
-      <button onclick="{{submit}}">Submit</button> or <a href="#" onclick="{{cancel}}">cancel</a>
-    </div>
-    <textarea style="width:100%;height:130px" id="replystuff"></textarea>
-    <button onclick="magic.reply(document.getElementById('replystuff').value)">Leave a comment</button>
-  </div>
-  <script type="text/javascript" src="embed2.js"></script>
-  <script type="text/javascript">
-    var magic = w2_embed({
-      element: document.getElementById('wave_embed_one'),
-      identifier: 'tesetiengw12e34',
-      hideroot: true,
-      poll_updates: true,
-      participants: ['public@a.gwave.com']
-    })
-  </script>
+        {{bliparr.length-1}} Responses <br>
+        <div class="tags">
+          {{wave.tags.join(', ')}}
+          <a onclick="{{addtag}}" href="#">Add Tag</a>
+        </div>
+        <a href="{{wave.permalink}}">Open in Google's awesome client</a>
+        <div class="waveedit">
+          <textarea style="width:100%;height:130px" class="wavetext"></textarea>
+          <button onclick="{{submit}}">Submit</button> or <a href="#" onclick="{{cancel}}">cancel</a>
+        </div>
+        <textarea style="width:100%;height:130px" id="replystuff"></textarea>
+        <button onclick="magic.reply(document.getElementById('replystuff').value)">Leave a comment</button>
+      </div>
+      <script type="text/javascript" src="embed2.js"></script>
+      <script type="text/javascript">
+        var magic = w2_embed({
+          element: document.getElementById('wave_embed_one'),
+          identifier: 'tesetiengw12e34',
+          hideroot: true,
+          poll_updates: true,
+          participants: ['public@a.gwave.com']
+        })
+      </script>
             
             
 Afterthoughts: Just a little thing to add at the end. You can can create a a div with the class waveedit as used above. It’s not strictly necessary, but it lets you customize things a bit more. You also need a CSS style for .wavethread with a padding-left (or margin-left) in order for threads to show up properly. Blips are automatically given a .waveblip class.
